@@ -2,10 +2,10 @@
   <div id="app">
     <db-header align="center"></db-header>
     <el-row class="container">
-      <el-col :span="2" class="menu">
+      <el-col :span="4" class="menu">
         <sidebar id="sidebar"></sidebar>
       </el-col>
-      <el-col :span="22" class="content">
+      <el-col :span="20" class="content">
         <db-filterinput></db-filterinput>
         <db-table></db-table>
       </el-col>
@@ -21,6 +21,7 @@
 </template>
 
 <script>
+
 
   import Sidebar from './components/Sidebar.vue'
   import DbHeader from './components/DbHeader.vue'

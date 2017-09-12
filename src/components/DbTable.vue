@@ -80,6 +80,9 @@
                 this.getEmployees();
                 this.dialogFormVisible = false;
                 this.successNotification();
+            });
+            Bus.$on('filterResultData', (results) => {
+                this.tableData = results;
             })
         },
 

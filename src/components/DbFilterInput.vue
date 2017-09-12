@@ -1,9 +1,9 @@
 <template>
     <el-form :inline="true" :model="formInline">
 
-        <el-form-item label="Sex">
-            <el-select v-model="formInline.trade" clearable placeholder="Select trade"
-                       v-on:visible-change="selectDemo">
+        <el-form-item label="Trade">
+            <el-select v-model="formInline.trade" clearable placeholder="Select trade">
+                       <!--v-on:visible-change="selectDemo">-->
                 <el-option
                         v-for="item in type_options"
                         :label="item.label"
@@ -12,19 +12,16 @@
             </el-select>
         </el-form-item>
 
-        <el-form-item v-if='formInline.sex' label="Description">
-            <el-input v-model="formInline.email" placeholder="Please input suffix of email"></el-input>
+        <el-form-item label="Search">
+            <el-input v-model="formInline.search" type="text" placeholder="Enter search term"></el-input>
         </el-form-item>
 
-        <el-form-item v-else='formInline.sex' label="Description">
-            <el-input v-model="formInline.email" disabled placeholder="Please input suffix of email"></el-input>
-        </el-form-item>
 
     </el-form>
 </template>
 
 <script>
-    import lodash from 'lodash'
+    import lodash, {debounce} from 'lodash'
     import Bus from '../eventBus'
     import { API_URL } from '../main'
 
@@ -33,10 +30,14 @@
         name: 'db-filterinput',
         data() {
             return {
-                type_options: [],
+                type_options: [
+                    {label: 'Carpenter', value: 'Carpenter'},
+                    {label: 'Electrician', value: 'Electrician'},
+                    {label: 'Welder', value: 'Welder'}
+                    ],
                 formInline: {
                     trade: '',
-                    email: ''
+                    search: ''
                 },
                 formLabelWidth: '120px'
             }
@@ -44,33 +45,51 @@
 
         watch: {
             'formInline.trade': 'filterResultData',
-            'formInline.lastName': 'filterResultData'
+            'formInline.search': 'filterNameData'
         },
 
         methods: {
-            selectDemo: function (params) {
-                if (params) {
-                    this.$axios.get(API_URL + "employees/trade")
-                        .then((response) => {
-                            this.type_options = response.data;
-                            console.log(response.data);
-                        }).catch(function (response) {
-                        console.log(response)
-                    });
-                }
+//            selectDemo: function (params) {
+//                if (params) {
+//                    this.$axios.get(API_URL + "employees/search/findByTrade" + this.formInline.trade)
+//                        .then((response) => {
+//                            this.type_options = response.data;
+//                            console.log(response.data);
+//                        }).catch(function (response) {
+//                        console.log(response)
+//                    });
+//                }
 
-            },
-            filterResultData: _.debounce(
+//            },
+            filterResultData: debounce(
                 function () {
-                    this.$axios.get(API_URL + "employees", {
+                    this.$axios.get(API_URL + "employees/search/findByTrade", {
                         params: {
                             trade: this.formInline.trade,
-                            email: this.formInline.lastName,
                         }
                     }).then((response) => {
-                        response.data['trade'] = this.formInline.trade;
-                        response.data['lastName'] = this.formInline.lastName;
-                        Bus.$emit('filterResultData', response.data);
+                        let data = response.data._embedded.employees;
+                        Bus.$emit('filterResultData', data);
+                        console.log(response.data);
+                    }).catch(function (response) {
+                        console.log(response)
+                    });
+
+                },
+                500
+            ),
+
+            filterNameData: debounce(
+                function () {
+                    this.$axios.get(API_URL +
+                        "employees/search/findByFirstNameContainsIgnoreCaseOrLastNameContainsIgnoreCaseOrderByLastNameAsc", {
+                        params: {
+                            firstName: this.formInline.search,
+                            lastName: this.formInline.search,
+                        }
+                    }).then((response) => {
+                        let data = response.data._embedded.employees;
+                        Bus.$emit('filterResultData', data);
                         console.log(response.data);
                     }).catch(function (response) {
                         console.log(response)
