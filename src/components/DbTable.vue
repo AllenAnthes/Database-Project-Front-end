@@ -43,6 +43,14 @@
                 width="140">
             </el-table-column>
             <el-table-column
+                label="Resume"
+                width="120">
+                <template scope="scope">
+                    <el-button v-if="scope.row.resumeLink !== null" type="text" @click="getResume(scope.$index, scope.row)" >Resume</el-button>
+                    <el-button v-else type="text" @click="editItem(scope.$index, scope.row)" >Needs Resume</el-button>
+                </template>
+            </el-table-column>
+            <el-table-column
                     label="Edit / Remove"
                 width="160">
                 <template scope="scope">
@@ -114,11 +122,6 @@
                 this.dialogFormVisible = true;
             },
 
-//            deleteRow(index, rows) {
-//                rows.splice(index, 1);
-//                this.deleteNotification();
-//
-//            },
 
             deleteRow(index, rows) {
                 this.$confirm('This will permanently delete the entry. Continue?', 'Warning', {

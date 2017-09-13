@@ -23,6 +23,18 @@
                     <el-option label="Welder" value="Welder"></el-option>
                 </el-select>
             </el-form-item>
+            <el-form-item label="Resume Link" :labelWidth="formLabelWidth">
+                <el-upload
+                        class="upload-button"
+                        drag
+                        action="https://jsonplaceholder.typicode.com/posts/"
+                        :on-preview="handlePreview"
+                        :on-remove="handleRemove"
+                        :file-list="fileList">
+                    <i class="el-icon-upload"></i>
+                    <div class="el-upload__text">Drop file here or <em>click to upload</em></div>
+                </el-upload>
+            </el-form-item>
 
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -36,8 +48,10 @@
 <script>
 
     import Bus from '../eventBus'
+    import ElFormItem from "../../node_modules/element-ui/packages/form/src/form-item.vue";
 
     export default {
+        components: {ElFormItem},
         data(){
             return {
                 formLabelWidth: '120px',

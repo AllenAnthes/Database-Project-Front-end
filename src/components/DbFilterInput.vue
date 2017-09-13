@@ -1,19 +1,19 @@
 <template>
     <el-form :inline="true" :model="formInline">
 
-        <el-form-item label="Trade">
-            <el-select v-model="formInline.trade" clearable placeholder="Select trade">
-                       <!--v-on:visible-change="selectDemo">-->
-                <el-option
-                        v-for="item in type_options"
-                        :label="item.label"
-                        :value="item.value">
-                </el-option>
-            </el-select>
-        </el-form-item>
+        <!--<el-form-item label="Trade">-->
+            <!--<el-select v-model="formInline.trade" clearable placeholder="Select trade">-->
+                       <!--&lt;!&ndash;v-on:visible-change="selectDemo">&ndash;&gt;-->
+                <!--<el-option-->
+                        <!--v-for="item in type_options"-->
+                        <!--:label="item.label"-->
+                        <!--:value="item.value">-->
+                <!--</el-option>-->
+            <!--</el-select>-->
+        <!--</el-form-item>-->
 
         <el-form-item label="Search">
-            <el-input v-model="formInline.search" type="text" placeholder="Enter search term"></el-input>
+            <el-input v-model="formInline.search" icon="search" type="text" placeholder="Enter search term"></el-input>
         </el-form-item>
 
 
@@ -63,6 +63,7 @@
 //            },
             filterResultData: debounce(
                 function () {
+
                     this.$axios.get(API_URL + "employees/search/findByTrade", {
                         params: {
                             trade: this.formInline.trade,
