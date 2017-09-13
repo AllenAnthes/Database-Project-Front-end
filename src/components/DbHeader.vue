@@ -1,12 +1,12 @@
 <template>
     <header style="background-color: rgb(10, 47, 88);">
-        <el-col :span="20">
+        <el-col :span="18">
 
         <div class="text-logo">{{ msg }}</div>
         <ul class="header-operations">
         </ul>
         </el-col>
-        <el-col :span="4">
+        <el-col :span="6">
         <el-form :model="loginForm" :rules="rules2" class="demo-ruleForm">
             <el-form-item label="Username" style="height: 15px;" align="left" labelWidth="120px">
                 <el-col :span="18">

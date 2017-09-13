@@ -8,7 +8,6 @@
             <el-form-item label="Last Name" :label-width="formLabelWidth">
                 <el-input v-model="form.lastName" autoComplete="off"></el-input>
             </el-form-item>
-
             <el-form-item label="Email" :label-width="formLabelWidth">
                 <el-input v-model="form.email" autoComplete="off"></el-input>
             </el-form-item>
@@ -27,10 +26,7 @@
                 <el-upload
                         class="upload-button"
                         drag
-                        action="https://jsonplaceholder.typicode.com/posts/"
-                        :on-preview="handlePreview"
-                        :on-remove="handleRemove"
-                        :file-list="fileList">
+                        action="https://jsonplaceholder.typicode.com/posts/">
                     <i class="el-icon-upload"></i>
                     <div class="el-upload__text">Drop file here or <em>click to upload</em></div>
                 </el-upload>

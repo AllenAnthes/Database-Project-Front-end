@@ -8,6 +8,7 @@
       <el-col :span="20" class="content">
         <db-filterinput></db-filterinput>
         <db-table></db-table>
+        <user-table></user-table>
       </el-col>
     </el-row>
     <el-row>
@@ -28,6 +29,7 @@
   import DbFooter from './components/DbFooter.vue'
   import DbTable from './components/DbTable.vue'
   import DbFilterinput from "./components/DbFilterInput.vue";
+  import UserTable from "./components/UserTable.vue";
 
   // Add headers
 
@@ -45,6 +47,8 @@ export default {
         DbFilterinput,
         Sidebar, DbHeader,
         DbFooter, DbTable,
+        UserTable,
+
     },
 }
 </script>

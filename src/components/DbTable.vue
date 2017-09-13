@@ -2,7 +2,7 @@
     <div>
         <el-table
             :data="tableData"
-            showHeader="false"
+            showHeader
             border
             stripe
             style="width: 100%"
