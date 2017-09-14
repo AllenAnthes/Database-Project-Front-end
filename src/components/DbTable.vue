@@ -1,65 +1,50 @@
 <template>
     <div>
-        <el-table
-            :data="tableData"
-            showHeader
-            border
-            stripe
-            style="width: 100%"
-            :default-sort = "{prop: 'lastName', order: 'ascending'}"
-            class="table">
+        <db-modal :form="form" :dialogFormVisible="dialogFormVisible"  v-on:closeModal="dialogVisible"></db-modal>
+
+        <data-tables :data="tableData" :action-col-def="actionColDef" :actions-def="actionsDef" @filtered-data="handleFilteredData">
             <el-table-column
-                sortable
-                prop="lastName"
-                label="Last Name"
-                width="130">
+                    sortable
+                    prop="lastName"
+                    label="Last Name"
+                    width="fit">
             </el-table-column>
             <el-table-column
-                sortable
-                prop="firstName"
-                label="First Name"
-                width="140">
+                    sortable
+                    prop="firstName"
+                    label="First Name"
+                    width="fit">
             </el-table-column>
             <el-table-column
-                prop="email"
-                label="Email"
-                width="180">
+                    prop="email"
+                    label="Email"
+                    width="fit">
             </el-table-column>
             <el-table-column
-                prop="phoneNumber"
-                label="Phone Number"
-                width="150">
+                    prop="phoneNumber"
+                    label="Phone Number"
+                    width="fit">
             </el-table-column>
             <el-table-column
-                :filters="[
+                    :filters="[
                     { text: 'Carpenter', value: 'Carpenter' },
                     { text: 'Electrician', value: 'Electrician' },
                     { text: 'Welder', value: 'Welder' }]"
-                :filter-method="filterTag"
-                filter-placement="bottom-end"
-
-                prop="trade"
-                label="Trade"
-                width="140">
+                    :filter-method="filterTag"
+                    filter-placement="bottom-end"
+                    prop="trade"
+                    label="Trade"
+                    width="fit">
             </el-table-column>
             <el-table-column
-                label="Resume"
-                width="120">
+                    label="Resume"
+                    width="fit">
                 <template scope="scope">
-                    <el-button v-if="scope.row.resumeLink !== null" type="text" @click="getResume(scope.$index, scope.row)" >Resume</el-button>
-                    <el-button v-else type="text" @click="editItem(scope.$index, scope.row)" >Needs Resume</el-button>
+                    <el-button v-if="scope.row.resumeLink !== null" type="text" @row-click="getResume(scope.row)" >Resume</el-button>
+                    <el-button v-else type="text" @click="editItem(scope.row)" >Needs Resume</el-button>
                 </template>
             </el-table-column>
-            <el-table-column
-                    label="Edit / Remove"
-                width="160">
-                <template scope="scope">
-                    <el-button @click="editItem(scope.$index, scope.row)" size="small">Edit</el-button>
-                    <el-button @click.native.prevent="deleteRow(scope.$index, tableData)" :plain="true" type="danger" size="small">Remove</el-button>
-                </template>
-            </el-table-column>
-        </el-table>
-        <db-modal :form="form" :dialogFormVisible="dialogFormVisible"  v-on:closeModal="dialogVisible"></db-modal>
+        </data-tables>
     </div>
 </template>
 <script>
@@ -68,20 +53,79 @@
     import Bus from '../eventBus'
     import DbModal from './DbModal.vue'
     import { API_URL } from '../main'
+    import DbFilterinput from "./DbFilterInput.vue";
+    import json2csv from 'json2csv'
+
 
     export default {
-        data(){
+        data() {
             return {
                 tableData: [],
+                filteredData: [],
                 apiUrl: 'http://127.0.0.1:8080/api/employees',
                 dialogFormVisible: false,
+                columns: ['lastName', 'firstName', 'email', 'phoneNumber', 'trade', 'resumeLink'],
+                columnNames: ['Last Name.', 'First Name', 'Email', 'Phone Number', 'Trade', 'Resume'],
                 form: '',
+                formInline: {
+                    trade: '',
+                    search: ''
+                },
+                actionsDef: {
+                    colProps: {
+                        span: 19
+                    },
+                    def: [{
+                        name: 'Add new',
+                        handler: () => {
+                            this.$message("new clicked")
+                        },
+                        icon: 'plus'
+                    },{
+                        name: 'export all',
+                        handler: () => {
+                            this.CsvExport(this.tableData, this.columns, this.columnNames, 'all')
+                        },
+                        icon: 'document'
+                    }, {
+                        name: 'export filtered',
+                        handler: () => {
+                            this.CsvExport(this.filteredData, this.columns, this.columnNames, 'filtered')
+                        },
+                        icon: 'document'
+                    }]
+                },
+
+                actionColDef: {
+                    label: 'Actions',
+                    def: [{
+                        icon: 'edit',
+                        handler: row => {
+                            const itemHref = row._links.self.href;
+                            this.$axios.get(itemHref).then((response) => {
+                                this.form = response.data;
+                            }).catch(function (response) {
+                                console.log(response)
+                            });
+                            this.dialogFormVisible = true;
+                        },
+
+                    }, {
+                        icon: 'delete',
+                        type: 'text',
+                        handler: row => {
+                            this.deleteRow(row, this.tableData)
+                            this.$message('RUA in row clicked ' + row.flow_no)
+                        },
+                    }]
+                }
             }
         },
 
         components: {
-            DbModal
+            DbModal, DbFilterinput
         },
+
         mounted () {
             this.getEmployees();
             Bus.$on('update', () => {
@@ -98,7 +142,6 @@
             dialogVisible: function () {
                 this.dialogFormVisible = false;
                 this.canceledNotification();
-
             },
 
             getEmployees: function () {
@@ -110,9 +153,15 @@
                     console.log(response)
                 });
             },
+            handleFilteredData(filteredData) {
+                this.filteredData = filteredData
+            },
 
+            filterTag(value, row) {
+                return row.trade === value;
+            },
 
-            editItem: function (index, row) {
+            editItem: function (row) {
                 const itemHref = row._links.self.href;
                 this.$axios.get(itemHref).then((response) => {
                     this.form = response.data;
@@ -142,10 +191,6 @@
                 });
             },
 
-            filterTag(value, row) {
-                return row.trade === value;
-            },
-
 //            formatter(row, column) {
 //                let data = this.$moment(row.create_datetime, this.$moment.ISO_8601);
 //                return data.format('YYYY-MM-DD')
@@ -168,12 +213,32 @@
                     type: 'info',
                 })
             },
+            CsvExport (data, fields, fieldNames, fileName) {
+                try {
+                    var result = json2csv({
+                        data: data,
+                        fields: fields,
+                        fieldNames: fieldNames
+                    })
+                    var csvContent = 'data:text/csvcharset=GBK,\uFEFF' + result
+                    var encodedUri = encodeURI(csvContent)
+                    var link = document.createElement('a')
+                    link.setAttribute('href', encodedUri)
+                    link.setAttribute('download', `${(fileName || 'file')}.csv`)
+                    document.body.appendChild(link)
+                    link.click()
+                    document.body.removeChild(link)
+                } catch (err) {
+                    console.error(err)
+                }
+            },
         }
     }
+
 </script>
 
 <style>
-    .table {
+    .data-table {
         margin-top: 30px;
         margin-bottom: 30px;
     }

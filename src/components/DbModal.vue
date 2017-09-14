@@ -1,13 +1,16 @@
 <template>
-    <el-dialog title="Edit" :close-on-click-modal="false" :show-close="true"
+    <el-dialog title="Edit" :close-on-click-modal="false" :show-close="false"
                :visible.sync="dialogFormVisible">
-        <el-form :model="form">
+        <el-form :model=form>
+
             <el-form-item label="First Name" :label-width="formLabelWidth">
                 <el-input v-model="form.firstName" autoComplete="off"></el-input>
             </el-form-item>
+
             <el-form-item label="Last Name" :label-width="formLabelWidth">
                 <el-input v-model="form.lastName" autoComplete="off"></el-input>
             </el-form-item>
+
             <el-form-item label="Email" :label-width="formLabelWidth">
                 <el-input v-model="form.email" autoComplete="off"></el-input>
             </el-form-item>
@@ -15,6 +18,7 @@
             <el-form-item label="Phone" :label-width="formLabelWidth">
                 <el-input v-model="form.phoneNumber" autoComplete="off"></el-input>
             </el-form-item>
+
             <el-form-item label="Trade" :label-width="formLabelWidth">
                 <el-select v-model="form.trade" placeholder="please select trade">
                     <el-option label="Carpenter" value="Carpenter"></el-option>
@@ -22,6 +26,7 @@
                     <el-option label="Welder" value="Welder"></el-option>
                 </el-select>
             </el-form-item>
+
             <el-form-item label="Resume Link" :labelWidth="formLabelWidth">
                 <el-upload
                         class="upload-button"
@@ -31,8 +36,8 @@
                     <div class="el-upload__text">Drop file here or <em>click to upload</em></div>
                 </el-upload>
             </el-form-item>
-
         </el-form>
+
         <div slot="footer" class="dialog-footer">
             <el-button :plain="true" type="danger" v-on:click="closeModal">Cancel</el-button>
             <el-button :plain="true" @click="updateForm(form)">Save</el-button>
@@ -83,11 +88,6 @@
                 this.$emit('closeModal');
             }
         },
-
-        computed: {
-
-        }
-
     }
 
 </script>

@@ -21,6 +21,9 @@
 <script>
 
     export default {
+
+        name: 'Footer',
+
         data(){
             return {
                 message: 'SpringBoot-Vue.js v0.1',

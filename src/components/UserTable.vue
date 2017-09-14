@@ -2,7 +2,7 @@
     <div>
         <el-table
                 :data="userTableData"
-                showHeader="false"
+                showHeader
                 border
                 stripe
                 style="width: 100%"
@@ -15,7 +15,7 @@
             <el-table-column
                 prop="name"
                 label="Name"
-                width="130">
+                width="180">
             </el-table-column>
             <el-table-column
                 prop="userRole"
@@ -24,14 +24,14 @@
             </el-table-column>
             <el-table-column
                     label="Edit / Remove"
-                    width="160">
+                    width="120">
                 <template scope="scope">
-                    <el-button @click="editUser(scope.$index, scope.row)" size="small">Edit</el-button>
-                    <el-button @click.native.prevent="deleteUser(scope.$index, tableData)" :plain="true" type="danger" size="small">Remove</el-button>
+                    <el-button @click="editUser(scope.$index, scope.row)" size="small"><i class="el-icon-edit"></i></el-button>
+                    <el-button @click.native.prevent="deleteUser(scope.$index, userTableData)" :plain="true" type="danger" size="small"><i class="el-icon-delete"></i></el-button>
                 </template>
             </el-table-column>
         </el-table>
-        <db-user-edit-modal :form="form" :editformVisible="editformVisible"  v-on:closeUserModal="editformVisible"></db-user-edit-modal>
+        <db-user-edit-modal :form="form" :editVisible="editVisible"  v-on:closeUserModal="editformVisible"></db-user-edit-modal>
     </div>
 </template>
 
@@ -44,12 +44,10 @@
     export default {
 
         components: {DbUserEditModal},
-        name: 'user-table',
-
         data() {
             return {
                 userTableData: [],
-                editformVisible: false,
+                editVisible: false,
                 form: '',
             }
         },
@@ -57,6 +55,11 @@
         mounted () {
 
             this.getUsers();
+            Bus.$on('updateUsers', () => {
+                this.getUsers();
+                this.editVisible = false;
+                this.successNotification();
+            });
 
         },
 
@@ -69,7 +72,7 @@
                 }).catch(function (response) {
                     console.log(response)
                 });
-                this.editformVisible = true;
+                this.editVisible = true;
             },
             getUsers: function () {
                 this.$axios.get(API_URL + 'userAccounts')
@@ -100,7 +103,7 @@
             },
 
             editformVisible() {
-                this.editformVisible = false;
+                this.editVisible = false;
             }
         }
     }

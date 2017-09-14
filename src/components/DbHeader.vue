@@ -7,14 +7,14 @@
         </ul>
         </el-col>
         <el-col :span="6">
-        <el-form :model="loginForm" :rules="rules2" class="demo-ruleForm">
-            <el-form-item label="Username" style="height: 15px;" align="left" labelWidth="120px">
-                <el-col :span="18">
+        <el-form :model="loginForm" :rules="rules2" class="demo-ruleForm" :inline="true" :label-position="right" >
+            <el-form-item label="Username" style="height: 15px;" :label-position="left" labelWidth="120px">
+                <el-col>
                 <el-input v-model="placeholder" size="mini" align="right" placeholder="Enter Username"></el-input>
                 </el-col>
             </el-form-item>
-            <el-form-item label="Password" style="height: 15px;" align="left" labelWidth="120px">
-                <el-col :span="18">
+            <el-form-item label="Password" style="height: 15px" :label-position="left" labelWidth="120px">
+                <el-col>
                     <el-input type="password" v-model="placeholder" size="mini" align="right" placeholder="Enter Password"></el-input>
                 </el-col>
             </el-form-item>
@@ -26,9 +26,10 @@
 </template>
 
 
+
 <script>
     export default {
-        name: 'headerComp',
+        name: 'header',
         data () {
             return {
                 msg: 'Database prototype'
