@@ -1,38 +1,53 @@
 <template>
-    <header style="background-color: rgb(10, 47, 88);">
-        <el-col :span="18">
+
+    <div id="headerDiv">
+        <login-modal :loginForm="loginForm" :loginModalVisible="loginModalVisible" v-on:loginModalClosed="closeLoginModal"></login-modal>
+        <header style="background-color: rgb(10, 47, 88);">
+
+        <el-col :span="22">
 
         <div class="text-logo">{{ msg }}</div>
         <ul class="header-operations">
         </ul>
         </el-col>
-        <el-col :span="6">
-        <el-form :model="loginForm" :rules="rules2" class="demo-ruleForm" :inline="true" :label-position="right" >
-            <el-form-item label="Username" style="height: 15px;" :label-position="left" labelWidth="120px">
-                <el-col>
-                <el-input v-model="placeholder" size="mini" align="right" placeholder="Enter Username"></el-input>
-                </el-col>
-            </el-form-item>
-            <el-form-item label="Password" style="height: 15px" :label-position="left" labelWidth="120px">
-                <el-col>
-                    <el-input type="password" v-model="placeholder" size="mini" align="right" placeholder="Enter Password"></el-input>
-                </el-col>
-            </el-form-item>
-        </el-form>
+        <el-col  :span="2">
+        <el-button title="LoginBtn" @click="displayLoginModal" >
+            Login
+        </el-button>
         </el-col>
     </header>
 
+    </div>
 
 </template>
 
 
 
 <script>
+
+    import LoginModal from './LoginModal.vue'
+    import ElButton from "../../node_modules/element-ui/packages/button/src/button.vue";
+
     export default {
+        components: {
+            ElButton, LoginModal
+        },
         name: 'header',
         data () {
             return {
-                msg: 'Database prototype'
+                msg: 'Database prototype',
+                loginModalVisible: false,
+                loginForm: '',
+            }
+        },
+
+        methods: {
+
+            displayLoginModal() {
+                this.loginModalVisible = true;
+            },
+            closeLoginModal() {
+              this.loginModalVisible = false;
             }
         }
     }

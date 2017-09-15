@@ -3,7 +3,6 @@ import Router from 'vue-router'
 import DbFrame from '../components/DbFrame.vue'
 import DbTable from '../components/DbTable.vue'
 import UserTable from '../components/UserTable.vue'
-import App from '../App.vue'
 
 
 Vue.use(Router)

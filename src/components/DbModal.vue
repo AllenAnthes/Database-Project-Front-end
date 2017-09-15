@@ -76,15 +76,25 @@
                     phoneNumber: entity.phoneNumber,
                     trade: entity.trade
                 }
-                this.$axios.post(url, params
-                ).then(function (response) {
+                if (!entity._links) {
+                    this.$axios.post(url, params
+                    ).then(function (response) {
                         console.log(response);
                         Bus.$emit("update",response.data);
                     }).catch(function (error) {
                         console.log(error);
                     });
+                }
+                else {
+                    this.$axios.put(url, params
+                    ).then(function (response) {
+                        console.log(response);
+                        Bus.$emit("update", response.data);
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                }
             },
-
 
             closeModal: function () {
                 this.$emit('closeModal');

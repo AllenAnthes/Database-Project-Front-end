@@ -7,6 +7,7 @@ import axios from 'axios'
 import locale from 'element-ui/lib/locale/lang/en'
 import DataTables from 'vue-data-tables'
 
+
 Object.defineProperty(Vue.prototype, '$axios', { value: axios });
 
 Vue.use(ElementUI, { locale })
