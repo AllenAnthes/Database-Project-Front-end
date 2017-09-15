@@ -67,6 +67,7 @@
                 columns: ['lastName', 'firstName', 'email', 'phoneNumber', 'trade', 'resumeLink'],
                 columnNames: ['Last Name.', 'First Name', 'Email', 'Phone Number', 'Trade', 'Resume'],
                 form: '',
+                newEmployee: false,
                 formInline: {
                     trade: '',
                     search: ''
@@ -78,7 +79,9 @@
                     def: [{
                         name: 'Add new',
                         handler: () => {
-                            this.$message("new clicked")
+                            this.form = {}
+                            this.newEmployee = true;
+                            this.dialogFormVisible = true
                         },
                         icon: 'plus'
                     },{
@@ -113,9 +116,8 @@
                     }, {
                         icon: 'delete',
                         type: 'text',
-                        handler: row => {
-                            this.deleteRow(row, this.tableData)
-                            this.$message('RUA in row clicked ' + row.flow_no)
+                        handler: (index, row) => {
+                            this.deleteRow(index, row)
                         },
                     }]
                 }
@@ -131,6 +133,7 @@
             Bus.$on('update', () => {
                 this.getEmployees();
                 this.dialogFormVisible = false;
+                this.newEmployee = false
                 this.successNotification();
             });
             Bus.$on('filterResultData', (results) => {
@@ -172,13 +175,15 @@
             },
 
 
-            deleteRow(index, rows) {
+            deleteRow(index, row) {
                 this.$confirm('This will permanently delete the entry. Continue?', 'Warning', {
                     confirmButtonText: 'OK',
                     cancelButtonText: 'Cancel',
                     type: 'warning'
                 }).then(() => {
-                    rows.splice(index, 1);
+                    let itemHref = index._links.self.href;
+                    this.$axios.delete(itemHref)
+                    this.tableData.splice(row, 1)
                     this.$message({
                         type: 'success',
                         message: 'Delete completed'
