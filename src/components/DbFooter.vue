@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <div class="footer-main"><p class="footer-main-title">{{ message }}</p><a
-                href="https://github.com/boylegu/SanicCRUD-vue" target="_blank" class="footer-main-link">Github</a><a
+                href="https://github.com/AllenAnthes" target="_blank" class="footer-main-link">Github</a><a
                 href="mailto:abanthes@gmail.com" class="footer-main-link">Email</a><a
                 href="https://github.com/ElemeFE/element/blob/master/.github/CONTRIBUTING.en-US.md" target="_blank"
                 class="footer-main-link">License</a></div>
@@ -24,7 +24,7 @@
 
         name: 'Footer',
 
-        data(){
+        data() {
             return {
                 message: 'SpringBoot-Vue.js v0.1',
             }
@@ -80,26 +80,10 @@
         font-size: 12px;
     }
 
-
     .footdoc span {
         display: inline-block;
         font-size: 14px;
         color: #768193;
 
     }
-
-    .footdoc img {
-        display: inline-block;
-        width: 84px;
-        height: 80px;
-        margin-top: 20px;
-        transform:rotate(330deg);
-        -ms-transform:rotate(330deg); /* Internet Explorer */
-        -moz-transform:rotate(330deg); /* Firefox */
-        -webkit-transform:rotate(330deg); /* Safari 和 Chrome */
-        -o-transform:rotate(330deg); /* Opera */
-
-    }
-
-
 </style>

@@ -1,8 +1,12 @@
 <template>
     <div>
-        <db-modal :form="form" :dialogFormVisible="dialogFormVisible"  v-on:closeModal="dialogVisible"></db-modal>
+        <edit-modal :form="form" :dialogFormVisible="dialogFormVisible" v-on:closeModal="dialogVisible"></edit-modal>
 
-        <data-tables :data="tableData" :action-col-def="actionColDef" :actions-def="actionsDef" @filtered-data="handleFilteredData">
+        <data-tables id="data-table"
+                     :data="tableData"
+                     :action-col-def="actionColDef"
+                     :actions-def="actionsDef"
+                     @filtered-data="handleFilteredData">
             <el-table-column
                     sortable
                     prop="lastName"
@@ -30,7 +34,7 @@
                     { text: 'Carpenter', value: 'Carpenter' },
                     { text: 'Electrician', value: 'Electrician' },
                     { text: 'Welder', value: 'Welder' }]"
-                    :filter-method="filterTag"
+                    :filter-method="filterTrade"
                     filter-placement="bottom-end"
                     prop="trade"
                     label="Trade"
@@ -40,8 +44,10 @@
                     label="Resume"
                     width="fit">
                 <template scope="scope">
-                    <el-button v-if="scope.row.resumeLink !== null" type="text" @row-click="getResume(scope.row)" >Resume</el-button>
-                    <el-button v-else type="text" @click="editItem(scope.row)" >Needs Resume</el-button>
+                    <el-button v-if="scope.row.resumeLink !== null" type="text" @row-click="getResume(scope.row)">
+                        Resume
+                    </el-button>
+                    <el-button v-else type="text" @click="editItem(scope.row)">Needs Resume</el-button>
                 </template>
             </el-table-column>
         </data-tables>
@@ -51,11 +57,10 @@
 
 
     import Bus from '../eventBus'
-    import DbModal from './DbModal.vue'
-    import { API_URL } from '../main'
-    import DbFilterinput from "./DbFilterInput.vue";
+    import EditModal from './EditModal.vue'
+    import {API_URL} from '../main'
     import json2csv from 'json2csv'
-
+    import {getAccessToken} from '../auth/auth'
 
 
     export default {
@@ -85,7 +90,7 @@
                             this.dialogFormVisible = true
                         },
                         icon: 'plus'
-                    },{
+                    }, {
                         name: 'export all',
                         handler: () => {
                             this.CsvExport(this.tableData, this.columns, this.columnNames, 'all')
@@ -106,7 +111,9 @@
                         icon: 'edit',
                         handler: row => {
                             const itemHref = row._links.self.href;
-                            this.$axios.get(itemHref).then((response) => {
+                            this.$axios.get(itemHref,
+                                {headers: {Authorization: `Bearer ${getAccessToken()}`}}
+                            ).then((response) => {
                                 this.form = response.data;
                             }).catch(function (response) {
                                 console.log(response)
@@ -126,10 +133,10 @@
         },
 
         components: {
-            DbModal, DbFilterinput
+            EditModal
         },
 
-        mounted () {
+        mounted() {
             this.getEmployees();
             Bus.$on('update', () => {
                 this.getEmployees();
@@ -149,19 +156,21 @@
             },
 
             getEmployees: function () {
-                this.$axios.get(API_URL + 'employees')
-                .then((response) => {
+                this.$axios.get(API_URL + 'employees',
+                    {headers: {Authorization: `Bearer ${getAccessToken()}`}}
+                ).then((response) => {
                     this.tableData = response.data._embedded.employees;
                     console.log(response.data);
                 }).catch(function (response) {
                     console.log(response)
                 });
             },
+
             handleFilteredData(filteredData) {
                 this.filteredData = filteredData
             },
 
-            filterTag(value, row) {
+            filterTrade(value, row) {
                 return row.trade === value;
             },
 
@@ -197,12 +206,7 @@
                 });
             },
 
-//            formatter(row, column) {
-//                let data = this.$moment(row.create_datetime, this.$moment.ISO_8601);
-//                return data.format('YYYY-MM-DD')
-//            },
-
-            successNotification () {
+            successNotification() {
                 this.$message({
                     title: 'Sucess!',
                     message: 'Entry successfully edited',
@@ -211,24 +215,24 @@
                 })
             },
 
-
-            canceledNotification () {
+            canceledNotification() {
                 this.$message({
                     title: 'Canceled',
                     message: 'Action Canceled',
                     type: 'info',
                 })
             },
-            CsvExport (data, fields, fieldNames, fileName) {
+
+            CsvExport(data, fields, fieldNames, fileName) {
                 try {
-                    var result = json2csv({
+                    let result = json2csv({
                         data: data,
                         fields: fields,
                         fieldNames: fieldNames
-                    })
-                    var csvContent = 'data:text/csvcharset=GBK,\uFEFF' + result
-                    var encodedUri = encodeURI(csvContent)
-                    var link = document.createElement('a')
+                    });
+                    let csvContent = 'data:text/csvcharset=GBK,\uFEFF' + result;
+                    let encodedUri = encodeURI(csvContent);
+                    let link = document.createElement('a');
                     link.setAttribute('href', encodedUri)
                     link.setAttribute('download', `${(fileName || 'file')}.csv`)
                     document.body.appendChild(link)
@@ -244,14 +248,9 @@
 </script>
 
 <style>
-    .data-table {
+    #data-table {
         margin-top: 30px;
         margin-bottom: 30px;
-    }
-
-    .pagination {
-        margin-top: 10px;
-        float: right;
     }
 
 </style>

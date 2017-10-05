@@ -28,7 +28,6 @@
 <script>
 
     import Bus from '../eventBus'
-    import ElFormItem from "../../node_modules/element-ui/packages/form/src/form-item.vue";
 
 
     export default {

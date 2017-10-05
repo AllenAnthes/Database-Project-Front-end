@@ -1,35 +1,27 @@
 <template>
-  <transition name="fade" mode="out-in">
-  <router-view></router-view>
-  </transition>
+    <transition name="fade" mode="out-in">
+        <router-view></router-view>
+    </transition>
 </template>
 
 <script>
 
 
-  import Sidebar from './components/Sidebar.vue'
-  import DbHeader from './components/DbHeader.vue'
-  import DbFooter from './components/DbFooter.vue'
-  import DbTable from './components/DbTable.vue'
-  import DbFilterinput from './components/DbFilterInput.vue'
-  import UserTable from './components/UserTable.vue'
+    import Sidebar from './components/Sidebar.vue'
+    import DbHeader from './components/DbHeader.vue'
+    import DbFooter from './components/DbFooter.vue'
+    import DbTable from './components/EmployeeDataTable.vue'
+    import UserTable from './components/UserTable.vue'
 
-export default {
-  data () {
-    return {
-      msg: 'Want something new?'
+    export default {
+
+        components: {
+            Sidebar, DbHeader,
+            DbFooter, DbTable,
+            UserTable,
+
+        },
     }
-  },
-
-
-    components: {
-        DbFilterinput,
-        Sidebar, DbHeader,
-        DbFooter, DbTable,
-        UserTable,
-
-    },
-}
 </script>
 
 

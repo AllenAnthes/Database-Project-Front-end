@@ -1,56 +1,45 @@
 <template>
-
     <div id="headerDiv">
-        <login-modal :loginForm="loginForm" :loginModalVisible="loginModalVisible" v-on:loginModalClosed="closeLoginModal"></login-modal>
         <header style="background-color: rgb(10, 47, 88);">
-
-        <el-col :span="22">
-
-        <div class="text-logo">{{ msg }}</div>
-        <ul class="header-operations">
-        </ul>
-        </el-col>
-        <el-col  :span="2">
-        <el-button title="LoginBtn" @click="displayLoginModal" >
-            Login
-        </el-button>
-        </el-col>
-    </header>
-
+            <el-col :span="22">
+                <div class="text-logo">{{ msg }}</div>
+                <ul class="header-operations">
+                </ul>
+            </el-col>
+            <el-col :span="2">
+                <el-button class="btn btn-danger log" v-show="isLoggedIn()" @click="handleLogout()">Log out </el-button>
+                <el-button class="btn btn-info log" v-show="!isLoggedIn()" @click="handleLogin()">Log In</el-button>
+            </el-col>
+        </header>
     </div>
-
 </template>
-
 
 
 <script>
 
-    import LoginModal from './LoginModal.vue'
-    import ElButton from "../../node_modules/element-ui/packages/button/src/button.vue";
+    import {isLoggedIn, login, logout} from '../auth/auth';
 
     export default {
-        components: {
-            ElButton, LoginModal
-        },
         name: 'header',
-        data () {
+        data() {
             return {
                 msg: 'Database prototype',
-                loginModalVisible: false,
-                loginForm: '',
+
             }
         },
-
         methods: {
-
-            displayLoginModal() {
-                this.loginModalVisible = true;
+            handleLogin() {
+                login();
             },
-            closeLoginModal() {
-              this.loginModalVisible = false;
-            }
+            handleLogout() {
+                logout();
+            },
+            isLoggedIn() {
+                return isLoggedIn();
+            },
         }
     }
+
 </script>
 
 <style>
@@ -74,6 +63,5 @@
         right: -20px;
         font-size: 25px;
         color: white;
-
     }
 </style>

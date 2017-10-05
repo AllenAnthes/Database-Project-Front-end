@@ -23,32 +23,28 @@
     import Sidebar from './Sidebar.vue'
     import DbHeader from './DbHeader.vue'
     import DbFooter from './DbFooter.vue'
-    import DbTable from './DbTable.vue'
-    import DbFilterinput from "./DbFilterInput.vue";
+    import EmployeeDataTable from './EmployeeDataTable.vue'
     import UserTable from "./UserTable.vue";
     import router from '../router'
-
-    // Add headers
-
+    import {isLoggedIn} from '../auth/auth.js'
 
 
-    export default {
-        data () {
-            return {
-                msg: 'Want something new?'
-            }
-        },
 
-        components: {
-            DbFilterinput,
-            Sidebar, DbHeader,
-            DbFooter, DbTable,
-            UserTable,
+export default {
+data () {
+return {
+}
+},
 
-        },
-    }
+components: {
+Sidebar, DbHeader,
+DbFooter, EmployeeDataTable,
+UserTable,
+
+},
+
+}
 </script>
-
 
 <style>
     element.style {

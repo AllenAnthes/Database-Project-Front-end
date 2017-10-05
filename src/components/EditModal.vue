@@ -20,7 +20,7 @@
             </el-form-item>
 
             <el-form-item label="Trade" :label-width="formLabelWidth">
-                <el-select v-model="form.trade" placeholder="please select trade">
+                <el-select v-model="form.trade" placeholder="please select trade" value="">
                     <el-option label="Carpenter" value="Carpenter"></el-option>
                     <el-option label="Electrician" value="Electrician"></el-option>
                     <el-option label="Welder" value="Welder"></el-option>
@@ -50,11 +50,12 @@
 
     import Bus from '../eventBus'
     import ElFormItem from "../../node_modules/element-ui/packages/form/src/form-item.vue";
-    import { API_URL } from '../main'
+    import {API_URL} from '../main'
+    import {getAccessToken} from "~/auth/auth";
 
     export default {
         components: {ElFormItem},
-        data(){
+        data() {
             return {
                 formLabelWidth: '120px',
                 returnedData: [],
@@ -66,6 +67,7 @@
             updateForm: function (entity) {
                 let url;
                 if (!entity._links)
+
                     url = API_URL + "employees"
                 else
                     url = entity._links.self.href;
@@ -77,16 +79,18 @@
                     trade: entity.trade
                 }
                 if (!entity._links) {
-                    this.$axios.post(url, params
+                    this.$axios.post(url, params,
+                        {headers: {Authorization: `Bearer ${getAccessToken()}`}},
                     ).then(function (response) {
                         console.log(response);
-                        Bus.$emit("update",response.data);
+                        Bus.$emit("update", response.data);
                     }).catch(function (error) {
                         console.log(error);
                     });
                 }
                 else {
-                    this.$axios.put(url, params
+                    this.$axios.put(url, params,
+                        {headers: {Authorization: `Bearer ${getAccessToken()}`}},
                     ).then(function (response) {
                         console.log(response);
                         Bus.$emit("update", response.data);
